@@ -1,10 +1,11 @@
 import os
 import sys
 from cv2 import cv2
+from PIL import Image
 from app.filters_process.pipeline import pipeline as pip
 from app.log.logger import transfer_log as log, clear_log, throw_log
 from app.CLI.read_CLI import reading_cli as default_config
-import app.filters_process.get as get
+from app.Functions import get, create
 
 
 def initialisation():
@@ -20,19 +21,21 @@ def initialisation():
         "output_dir": '',
         "log_file": '',
         "filters:": '',
+        "extension": '',
     }
 
     for i, arg in enumerate(args):
+        has_argument = i + 1
 
         if arg == '--config-file':
-            if i + 1 >= len(args):
+            if has_argument >= len(args):
                 log("ERROR : IndexError : You did not provided a file.")
                 return sys.exit(0)
 
-            if args[i + 1] == 'imagefilter.log':
-                content['log_file'] = args[i + 1]
-            elif args[i + 1] == 'cli.ini':
-                content = default_config(args[i + 1])
+            if args[has_argument] == 'imagefilter.log':
+                content['log_file'] = args[has_argument]
+            elif args[has_argument] == 'cli.ini':
+                content = default_config(args[has_argument])
                 return content
 
         if arg == "-h":
@@ -42,6 +45,13 @@ def initialisation():
                   "-o , --output_dir <directory>\n"
                   "--f, --filters <-h for more help>\n")
             return sys.exit(0)
+
+        if arg == '--output-type':
+            if has_argument >= len(args):
+                log("ERROR : IndexError : You did not provided an extension.")
+
+            if args[has_argument] == 'gif':
+                content['extension'] = args[has_argument]
 
     return path_analyse(content)
 
@@ -91,15 +101,18 @@ def processing(path):
 
     filter_argument = get.filters(path['filters'])
     images_list = get.images(path['input_dir'])
-    filtered_image_directory = path['output_dir']
+
+    filtered_directory = path['output_dir']
+    extension_file = path['extension']
     log_file = path['log_file']
+    image_filtered = []
 
     if len(images_list) == 0:
         return log('ERROR : IndexError : The directory returned NULL.')
 
-    if not os.path.exists(f"{filtered_image_directory}"):
-        log(f'Creating directory {filtered_image_directory}...')
-        os.makedirs(f"{filtered_image_directory}")
+    if not os.path.exists(f"{filtered_directory}"):
+        log(f'Creating directory {filtered_directory}...')
+        os.makedirs(f"{filtered_directory}")
 
     for image in images_list:
         log(f"Opening image data from = {path['input_dir']}/{image}")
@@ -109,7 +122,15 @@ def processing(path):
         for filter_name, argument in filter_argument.items():
             image_read = pip(filter_name, argument, image_read)
 
+        # gif
+        # pil_img = cv2.cvtColor(image_read, cv2.COLOR_BGR2RGB)
+        image_filtered.append(Image.fromarray(image_read))
+
         cv2.imwrite(to_directory_filter, image_read)
         log(f"Save result image to = {to_directory_filter}\n")
+
+    # gif
+    if extension_file == 'gif':
+        create.gif(image_filtered, filtered_directory)
 
     return throw_log(log_file)
