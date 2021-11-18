@@ -35,3 +35,15 @@ def dump_log():
             print(f.read())
     except FileNotFoundError:
         print('ERROR : FileNotFoundError : Target "imagefilter.log" couldn\'t be fetched.')
+
+
+def clear_log():
+    """
+    :return:
+    """
+
+    try:
+        with open("app/log/imagefilter.log", "a") as f:
+            f.truncate(0)
+    except FileNotFoundError:
+        print('ERROR : FileNotFoundError : Target "imagefilter.log" couldn\'t be fetched.')

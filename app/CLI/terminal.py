@@ -3,7 +3,7 @@ import os
 import sys
 
 from app.filters_process.pipeline import pipeline as pip
-from app.log.logger import transfer_log as log
+from app.log.logger import transfer_log as log, clear_log
 
 
 def initialisation():
@@ -11,6 +11,7 @@ def initialisation():
 
     :return:
     """
+    clear_log()
 
     path = {
         "input_dir": '',
