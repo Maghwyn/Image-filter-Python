@@ -1,4 +1,4 @@
-import cv2
+import cv2 as cv2
 import numpy
 from app.log.logger import transfer_log as log
 
