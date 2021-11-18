@@ -1,4 +1,5 @@
 from datetime import datetime
+import os
 
 
 def time():
@@ -47,3 +48,13 @@ def clear_log():
             f.truncate(0)
     except FileNotFoundError:
         print('ERROR : FileNotFoundError : Target "imagefilter.log" couldn\'t be fetched.')
+
+
+def throw_log(log_file):
+    """
+    :return:
+    """
+    if os.path.isfile(f'app/log/{log_file}'):
+        return dump_log()
+
+    return
