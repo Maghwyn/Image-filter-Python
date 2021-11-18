@@ -79,6 +79,16 @@ def get_filter(argument):
     return filter_argument
 
 
+def get_image(path):
+    images_list = os.listdir(path)
+    for image in images_list:
+        if not image.endswith('.jpeg' or '.png' or '.jpg' or '.svg'):
+            log(f'ValueError : Invalid Format => {image} was ignored.\n')
+            images_list.remove(image)
+
+    return images_list
+
+
 def processing(path):
     """
 
@@ -97,7 +107,7 @@ def processing(path):
                 log("ERROR : IndexError : You did not provided a filter.")
                 return
 
-            images_list = os.listdir(path['input_dir'])
+            images_list = get_image(path['input_dir'])
             if len(images_list) == 0:
                 return log('ERROR : IndexError : The directory returned NULL.')
 
