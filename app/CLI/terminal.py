@@ -3,7 +3,7 @@ import os
 import sys
 
 from app.filters_process.pipeline import pipeline as pip
-from app.log.logger import transfer_log as log, clear_log
+from app.log.logger import transfer_log as log, dump_log, clear_log
 
 
 def initialisation():
@@ -90,6 +90,21 @@ def get_image(path):
     return images_list
 
 
+def throw_log():
+    args = sys.argv
+    for i, arg in enumerate(args):
+        if arg == "--cfg-file":
+            if i + 1 >= len(args):
+                print('ERROR : IndexError : You did not provided a file.')
+                return
+
+            input_log = args[i + 1]
+            if os.path.isfile(f'app/log/{input_log}'):
+                return dump_log()
+            else:
+                print('ERROR : IndexError : The file provided does not exist.')
+
+
 def processing(path):
     """
 
@@ -132,4 +147,4 @@ def processing(path):
                 cv2.imwrite(to_directory_filter, image_read)
                 log(f"Save result image to = {to_directory_filter}\n")
 
-    return 0
+    return throw_log()
