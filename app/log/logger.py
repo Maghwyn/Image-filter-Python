@@ -31,7 +31,7 @@ def dump_log():
     """
 
     try:
-        with open("app/log/imagefilter.log", "a") as f:
+        with open("app/log/imagefilter.log", "r") as f:
             print(f.read())
     except FileNotFoundError:
         print('ERROR : FileNotFoundError : Target "imagefilter.log" couldn\'t be fetched.')
