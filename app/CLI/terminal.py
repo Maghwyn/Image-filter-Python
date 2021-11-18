@@ -1,4 +1,4 @@
-import cv2
+import cv2 as cv2
 import os
 import sys
 
@@ -88,7 +88,10 @@ def processing(path):
 
     if path is None:
         return
-
+    """
+    
+    If the path is empty : nothing happened
+    """
     args = sys.argv
     for i, arg in enumerate(args):
         if arg == '--f':
@@ -96,10 +99,18 @@ def processing(path):
             if i + 1 >= len(args):
                 log("ERROR : IndexError : You did not provided a filter.")
                 return
+            """
+            
+            If the filter is unknown then an error message appears
+            """
 
             images_list = os.listdir(path['input_dir'])
             if len(images_list) == 0:
                 return log('ERROR : IndexError : The directory returned NULL.')
+            """
+            
+            If there is no image then an error message appears
+            """
 
             # ------------------------------------------------------------------- #
 
@@ -107,6 +118,10 @@ def processing(path):
             if not os.path.exists(f"{filtered_image_directory}"):
                 log(f'Creating directory {filtered_image_directory}...')
                 os.makedirs(f"{filtered_image_directory}")
+                """
+                
+                Tidy the filtered images in "output", if "output" doesn't exist then an "output" is created
+                """
 
             filter_argument = get_filter(args[i + 1])
 
@@ -114,11 +129,19 @@ def processing(path):
                 log(f"Opening image data from = {path['input_dir']}/{image}")
                 image_read = cv2.imread(f"{path['input_dir']}/{image}")
                 to_directory_filter = f"{path['output_dir']}/{image}"
+                """
+                
+                Filter confirmation
+                """
 
                 for filter_name, argument in filter_argument.items():
                     image_read = pip(filter_name, argument, image_read)
 
                 cv2.imwrite(to_directory_filter, image_read)
                 log(f"Save result image to = {to_directory_filter}\n")
+                """
+                
+                Put the filtered image to "output"
+                """
 
     return 0
