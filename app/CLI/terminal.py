@@ -26,7 +26,7 @@ def initialisation():
         "output_dir": '',
         "log_file": '',
         "filters": '',
-        "extension": 'image',
+        "extension": '',
     }
 
     for i, arg in enumerate(args):
@@ -163,7 +163,6 @@ def default_processing(content):
     """
 
     content = path_analyse(content)
-    print(content)
 
     filter_argument = get.filters(content['filters'])
     images_list = get.images(content['input_dir'])
@@ -204,6 +203,8 @@ def gif_processing(content):
     :return: Either a log or nothing.
     """
     content = path_analyse(content)
+    content = path_analyse(content)
+    # Error if -i or -o missing, not fixed.
 
     images_list = get.images(content['input_dir'])
     filter_argument = get.filters(content['filters'])
@@ -247,10 +248,9 @@ def video_processing(content):
     :return: Either a log or nothing.
     """
     content = path_analyse(content)
-    # Error if -i or -o missing
+    # Error if -i or -o missing, not fixed.
 
     filter_argument = get.filters(content['filters'])
-    print(filter_argument)
     filtered_directory = content['output_dir']
     origin_directory = content['input_dir']
     log_file = content['log_file']

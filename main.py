@@ -2,7 +2,7 @@ from app.CLI import terminal as core
 
 content = core.initialisation()
 
-if content['extension'] == "'image'":
+if content['extension'] == '':
     core.default_processing(content)
 
 if content['extension'] == 'gif':
