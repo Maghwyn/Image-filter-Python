@@ -1,13 +1,12 @@
 import numpy
 from cv2 import cv2
-from PIL import Image, ImageDraw, ImageFont
 from app.log.logger import transfer_log as log
 
 
 class RgbToGray:
     """
     Declare a class named RgbToGray.
-    This class will declare the image_path passed as an argument, then transform it into B & W.
+    This class will declare the image passed as an argument, then transform it into B & W.
 
     :def rgb_to_gray: apply a B&W filter on the class image.
     """
@@ -22,9 +21,9 @@ class RgbToGray:
 class CleanToBlur:
     """
     Declare a class named CleanToBlur.
-    This class will declare the image_path passed as an argument, then blur it.
+    This class will declare the image passed as an argument, then blur it.
 
-    :def clean_to_blur: apply a blurred filter on the class image.
+    :def clean_to_blur: apply a blurred filter on the image.
     :-> blur_strength_x: apply a blur strength on the x axis of the class image.
     :-> blur_strength_y: apply a blur strength on the y axis of the class image.
     """
@@ -47,9 +46,9 @@ class CleanToBlur:
 class CleanToDilate:
     """
     Declare a class named CleanToDilate.
-    This class will declare the image_path passed as an argument, then dilate it.
+    This class will declare the image passed as an argument, then dilate it.
 
-    :def clean_to_dilate: apply a dilated filter on the class image.
+    :def clean_to_dilate: apply a dilated filter on the image.
     :-> dilate_strength_x: apply a dilate strength on the x axis of the class image.
     :-> dilate_strength_y: apply a dilate strength on the y axis of the class image.
     :-> iterations: apply the dilate to x number of pixels.
@@ -68,6 +67,15 @@ class CleanToDilate:
 
 
 class FilterZeTeam:
+    """
+    Declare a class named FilterZeTeam.
+    This class will declare the image passed as an argument, then add a text to it.
+
+    :def text_color: apply a text filter on the class image.
+    -> It will slip the argument into two index.
+    -> One of them will not be processed, it will only be used as a string of the text submitted.
+    -> The other one will be the hexadecimal processed to rgb.
+    """
 
     def __init__(self, my_image, text_hex_value):
         self.image = my_image
@@ -79,7 +87,6 @@ class FilterZeTeam:
         if '-' in self.text_hex:
             split_text_hex = self.text_hex.split('-')
 
-        # font = ImageFont.truetype('/Library/Fonts/Arial.ttf', 50)
         font = cv2.FONT_HERSHEY_COMPLEX
         font_scale = 2
 

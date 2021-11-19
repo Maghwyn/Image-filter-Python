@@ -40,7 +40,7 @@ def dump_log():
 
 def clear_log():
     """
-    :return:
+    This will simply read the log file and clear its content.
     """
 
     try:
@@ -52,7 +52,8 @@ def clear_log():
 
 def throw_log(log_file):
     """
-    :return:
+    This function will simple check if the file exist in the project, and return the dump_log value.
+    :return: nothing in case the file doesn't exist.
     """
     if os.path.isfile(f'app/log/{log_file}'):
         return dump_log()

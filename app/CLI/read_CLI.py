@@ -2,6 +2,11 @@ import configparser as parse
 
 
 def reading_cli(file):
+    """
+    Read the file ini and use the template to run the code.
+    :param file: The file fetched for the template.
+    :return: Return a dictionary of the template.
+    """
     path_filters_log = {
         "input_dir": '',
         "output_dir": '',

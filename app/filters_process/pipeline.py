@@ -4,11 +4,11 @@ from app.log.logger import transfer_log as log
 
 def pipeline(filter_name, argument, image_read):
     """
-    Calling a pipeline using the input and output path as well as the image that will be processed.
-    :param filter_name:
-    :param argument:
-    :param image_read:
-    :return:
+    Calling a pipeline of filters using the the image, the filter_name and its argument.
+    :param filter_name: string value that will be used to recognize which filter to use.
+    :param argument: int value, or string depending on the filter.
+    :param image_read: image converted to object image.
+    :return: return the image with the filters.
     """
 
     if filter_name == 'grayscale':

@@ -4,8 +4,9 @@ from app.log.logger import transfer_log as log
 
 def images(path):
     """
-    :param path:
-    :return:
+    The function will pass into argument a few valid extensions and compare the extension of the file to them.
+    In the case where the extension does not match, the file is removed from the list.
+    :return: the list of validated images.
     """
     images_list = []
     for image in os.listdir(path):
@@ -19,8 +20,11 @@ def images(path):
 
 def filters(argument):
     """
-    :param argument:
-    :return:
+    This function will perform a set of splitting operations in case the string match
+    any characters. They will then be stocked into array and sorted in the right way for
+    the program to work.
+    :param argument: the filter and its value.
+    :return: a dict with the key as the filter and the value as the filter value.
     """
     if argument == '':
         return None
