@@ -1,5 +1,4 @@
 def gif(images_src, output_dir):
-    print(images_src)
     frames = []
     for image in images_src:
         frames.append(image)

@@ -7,11 +7,11 @@ def images(path):
     :param path:
     :return:
     """
-    images_list = os.listdir(path)
-    for image in images_list:
-        if not image.endswith('.jpeg' or '.png' or '.jpg' or '.svg'):
+    images_list = []
+    for image in os.listdir(path):
+        if image.endswith('.jpeg' or '.png' or '.jpg' or '.svg'):
             log(f'ValueError : Invalid Format => {image} was ignored.\n')
-            images_list.remove(image)
+            images_list.append(image)
 
     return images_list
 

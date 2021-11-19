@@ -43,7 +43,17 @@ def initialisation():
             print("-h , --help\n"
                   "-i , --input_dir <directory>\n"
                   "-o , --output_dir <directory>\n"
-                  "--f, --filters <-h for more help>\n")
+                  "--f, --filters <-h for more help>\n"
+                  "--config-file cli.ini\n"
+                  "--list-filters\n")
+            return sys.exit(0)
+
+        if arg == '--list-filters':
+            print("\nFilters options :")
+            print('"grayscale", ColorToGray\n'
+                  '"blur:integer_odd", CleanToBlur\n'
+                  '"dilate:integer", CleanToDilate\n')
+            print('Usage example : --f "blur:5|grayscale"\n')
             return sys.exit(0)
 
         if arg == '--output-type':
@@ -123,8 +133,7 @@ def processing(path):
             image_read = pip(filter_name, argument, image_read)
 
         # gif
-        # pil_img = cv2.cvtColor(image_read, cv2.COLOR_BGR2RGB)
-        image_filtered.append(Image.fromarray(image_read))
+        # image_filtered.append(Image.fromarray(image_read))
 
         cv2.imwrite(to_directory_filter, image_read)
         log(f"Save result image to = {to_directory_filter}\n")
