@@ -54,7 +54,6 @@ def initialisation():
 
             if args[has_argument] == 'cli.ini':
                 content = default_config(args[has_argument])
-                return content
 
         if arg == '--log-file':
             if has_argument >= len(args):
@@ -117,10 +116,9 @@ def path_analyse(content):
 
 
 def default_processing(content):
-    if content is None:
-        return
 
     content = path_analyse(content)
+    print(content)
 
     filter_argument = get.filters(content['filters'])
     images_list = get.images(content['input_dir'])
