@@ -6,6 +6,7 @@ from app.filters_process.pipeline import pipeline as pip
 from app.log.logger import transfer_log as log, clear_log, throw_log
 from app.CLI.read_CLI import reading_cli as default_config
 from app.Functions import get, create
+from app.video import convert_video as this
 
 
 def initialisation():
@@ -20,23 +21,12 @@ def initialisation():
         "input_dir": '',
         "output_dir": '',
         "log_file": '',
-        "filters:": '',
+        "filters": '',
         "extension": '',
     }
 
     for i, arg in enumerate(args):
         has_argument = i + 1
-
-        if arg == '--config-file':
-            if has_argument >= len(args):
-                log("ERROR : IndexError : You did not provided a file.")
-                return sys.exit(0)
-
-            if args[has_argument] == 'imagefilter.log':
-                content['log_file'] = args[has_argument]
-            elif args[has_argument] == 'cli.ini':
-                content = default_config(args[has_argument])
-                return content
 
         if arg == "-h":
             print("\nOptions :")
@@ -56,14 +46,34 @@ def initialisation():
             print('Usage example : --f "blur:5|grayscale"\n')
             return sys.exit(0)
 
-        if arg == '--output-type':
+        if arg == '--config-file':
             if has_argument >= len(args):
-                log("ERROR : IndexError : You did not provided an extension.")
+                log("ERROR : IndexError : You did not provided a file.")
+                return sys.exit(0)
 
-            if args[has_argument] == 'gif':
-                content['extension'] = args[has_argument]
+            if args[has_argument] == 'cli.ini':
+                content = default_config(args[has_argument])
+                return content
 
-    return path_analyse(content)
+        if arg == '--log-file':
+            if has_argument >= len(args):
+                log("ERROR : IndexError : You did not provided a file.")
+                return sys.exit(0)
+
+            if args[has_argument] == 'imagefilter.log':
+                content['log_file'] = 'log'
+
+        if arg == '--output-type=gif':
+            new_content = content
+            new_content['extension'] = 'gif'
+            return gif_processing(new_content)
+
+        if arg == '--video=pain.mp4':
+            new_content = content
+            new_content['extension'] = 'mp4'
+            return video_processing(new_content)
+
+    return content
 
 
 def verify_submit(cmd, has_argument, default_path):
@@ -107,14 +117,51 @@ def path_analyse(content):
     return content
 
 
-def processing(path):
+def default_processing(content):
+    content = path_analyse(content)
 
-    filter_argument = get.filters(path['filters'])
-    images_list = get.images(path['input_dir'])
+    if content is None:
+        return
 
-    filtered_directory = path['output_dir']
-    extension_file = path['extension']
-    log_file = path['log_file']
+    filter_argument = get.filters(content['filters'])
+    images_list = get.images(content['input_dir'])
+    filtered_directory = content['output_dir']
+    origin_directory = content['input_dir']
+    log_file = content['log_file']
+
+    if len(images_list) == 0:
+        return log('ERROR : IndexError : The directory returned NULL.')
+
+    if not os.path.exists(f"{filtered_directory}"):
+        log(f'Creating directory {filtered_directory}...')
+        os.makedirs(f"{filtered_directory}")
+
+    for image in images_list:
+        log(f"Opening image data from = {origin_directory}/{image}")
+        image_read = cv2.imread(f"{origin_directory}/{image}")
+        to_directory_filter = f"{filtered_directory}/{image}"
+
+        for filter_name, argument in filter_argument.items():
+            image_read = pip(filter_name, argument, image_read)
+
+        cv2.imwrite(to_directory_filter, image_read)
+        log(f"Save result image to = {to_directory_filter}\n")
+
+    if log_file == 'log':
+        return throw_log()
+
+    return
+
+
+def gif_processing(content):
+    content = path_analyse(content)
+
+    images_list = get.images(content['input_dir'])
+    filter_argument = get.filters(content['filters'])
+    filtered_directory = content['output_dir']
+    origin_directory = content['input_dir']
+    log_file = content['log_file']
+
     image_filtered = []
 
     if len(images_list) == 0:
@@ -125,21 +172,50 @@ def processing(path):
         os.makedirs(f"{filtered_directory}")
 
     for image in images_list:
-        log(f"Opening image data from = {path['input_dir']}/{image}")
-        image_read = cv2.imread(f"{path['input_dir']}/{image}")
-        to_directory_filter = f"{path['output_dir']}/{image}"
+        log(f"Opening image data from = {origin_directory}/{image}")
+        image_read = cv2.imread(f"{origin_directory}/{image}")
 
         for filter_name, argument in filter_argument.items():
             image_read = pip(filter_name, argument, image_read)
 
-        # gif
-        # image_filtered.append(Image.fromarray(image_read))
+        image_filtered.append(Image.fromarray(image_read))
 
-        cv2.imwrite(to_directory_filter, image_read)
-        log(f"Save result image to = {to_directory_filter}\n")
+    create.gif(image_filtered, filtered_directory)
 
-    # gif
-    if extension_file == 'gif':
-        create.gif(image_filtered, filtered_directory)
+    if log_file == 'log':
+        return throw_log()
 
-    return throw_log(log_file)
+    return
+
+
+def video_processing(content):
+    content = path_analyse(content)
+    # Error if -i or -o missing
+
+    filter_argument = get.filters(content['filters'])
+    print(filter_argument)
+    filtered_directory = content['output_dir']
+    origin_directory = content['input_dir']
+    log_file = content['log_file']
+
+    if not os.path.exists(f"{filtered_directory}"):
+        log(f'Creating directory {filtered_directory}...')
+        os.makedirs(f"{filtered_directory}")
+
+    gray_or_not = 0
+    if 'grayscale' in filter_argument.keys():
+        gray_or_not = 1
+
+    video_size = this.fetch_video_size(origin_directory, 'pain.mp4')
+    video_images_list = this.slice_video(origin_directory, 'pain.mp4')
+
+    if filter_argument is not None:
+        video_filter = this.video_apply_filters(video_images_list, filter_argument)
+        this.rewrite_video(filtered_directory, video_filter, video_size, gray_or_not)
+    else:
+        this.rewrite_video(filtered_directory, video_images_list, video_size, gray_or_not)
+
+    if log_file == 'log':
+        return throw_log()
+
+    return

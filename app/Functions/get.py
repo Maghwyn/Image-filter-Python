@@ -10,8 +10,9 @@ def images(path):
     images_list = []
     for image in os.listdir(path):
         if image.endswith('.jpeg' or '.png' or '.jpg' or '.svg'):
-            log(f'ValueError : Invalid Format => {image} was ignored.\n')
             images_list.append(image)
+        else:
+            log(f'ValueError : Invalid Format => {image} was ignored.\n')
 
     return images_list
 
@@ -21,6 +22,8 @@ def filters(argument):
     :param argument:
     :return:
     """
+    if argument == '':
+        return None
 
     filter_argument = {}
     if '|' in argument:

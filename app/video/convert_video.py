@@ -32,18 +32,20 @@ def slice_video(path, vid_name):
     return images_list
 
 
-def video_apply_filters(images_list, filters, strength):
+def video_apply_filters(images_list, filters):
     images_filtered = []
     for image in images_list:
-        images_filtered.append(pip(filters, strength, image))
+        for filter_name, argument in filters.items():
+            images_filtered.append(pip(filter_name, argument, image))
 
     return images_filtered
 
 
 def rewrite_video(path, images_list, vid_size, is_gray):
     size = (vid_size[0], vid_size[1])
-    if is_gray == 'grayscale':
-        video = cv2.VideoWriter(f'{path}/project.mp4', cv2.VideoWriter_fourcc('m', 'p', '4', 'v'), 30, size, isColor=False)
+    if is_gray == 1:
+        video = cv2.VideoWriter(f'{path}/project.mp4', cv2.VideoWriter_fourcc('m', 'p', '4', 'v'), 30, size,
+                                isColor=False)
     else:
         video = cv2.VideoWriter(f'{path}/project.mp4', cv2.VideoWriter_fourcc('m', 'p', '4', 'v'), 30, size)
 
@@ -51,9 +53,3 @@ def rewrite_video(path, images_list, vid_size, is_gray):
         video.write(images_list[image])
 
     video.release()
-
-
-video_size = fetch_video_size('data/input', 'pain.mp4')
-fetch_images = slice_video('data/input', 'pain.mp4')
-video_filter = video_apply_filters(fetch_images, 'dilate', 12)
-rewrite_video('data/hello', video_filter, video_size, 'dilate')
