@@ -31,13 +31,13 @@ def filters(argument):
         for arg in separated_argument:
             if ':' in arg:
                 temp_filter_argument = arg.split(':')
-                filter_argument[str(temp_filter_argument[0])] = int(temp_filter_argument[1])
+                filter_argument[str(temp_filter_argument[0])] = str(temp_filter_argument[1])
             else:
                 filter_argument[str(arg)] = str(arg)
     else:
         if ':' in argument:
             temp_filter_argument = argument.split(':')
-            filter_argument[str(temp_filter_argument[0])] = int(temp_filter_argument[1])
+            filter_argument[str(temp_filter_argument[0])] = str(temp_filter_argument[1])
         else:
             filter_argument[str(argument)] = str(argument)
 

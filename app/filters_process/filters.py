@@ -1,5 +1,6 @@
 import numpy
 from cv2 import cv2
+from PIL import Image, ImageDraw, ImageFont
 from app.log.logger import transfer_log as log
 
 
@@ -32,15 +33,15 @@ class CleanToBlur:
         self.image = my_image
 
     def clean_to_blur(self, blur_strength_x, blur_strength_y):
-        if blur_strength_x < 0 or blur_strength_y < 0:
+        if int(blur_strength_x) < 0 or int(blur_strength_y) < 0:
             log('ValueError : The blur filter failed => Negative dimensions are not allowed.')
             return self.image
 
-        if blur_strength_x % 2 == 0 or blur_strength_y % 2 == 0:
+        if int(blur_strength_x) % 2 == 0 or int(blur_strength_y) % 2 == 0:
             log('ValueError : The blur filter failed => Parameters can not be even.')
             return self.image
 
-        return cv2.GaussianBlur(self.image, (blur_strength_x, blur_strength_y), 0)
+        return cv2.GaussianBlur(self.image, (int(blur_strength_x), int(blur_strength_y)), 0)
 
 
 class CleanToDilate:
@@ -58,9 +59,33 @@ class CleanToDilate:
         self.image = my_image
 
     def clean_to_dilate(self, dilate_strength_x, dilate_strength_y, iterations):
-        if dilate_strength_x < 0 or dilate_strength_y < 0:
+        if int(dilate_strength_x) < 0 or int(dilate_strength_y) < 0:
             log('ValueError : The dilate filter failed => Negative dimensions are not allowed.')
             return self.image
 
-        kernel = numpy.ones((dilate_strength_x, dilate_strength_y), numpy.uint8)
-        return cv2.dilate(self.image, kernel, iterations=iterations)
+        kernel = numpy.ones((int(dilate_strength_x), int(dilate_strength_y)), numpy.uint8)
+        return cv2.dilate(self.image, kernel, iterations=int(iterations))
+
+
+class FilterZeTeam:
+
+    def __init__(self, my_image, text_hex_value):
+        self.image = my_image
+        self.text_hex = text_hex_value
+
+    def text_color(self):
+
+        split_text_hex = []
+        if '-' in self.text_hex:
+            split_text_hex = self.text_hex.split('-')
+
+        # font = ImageFont.truetype('/Library/Fonts/Arial.ttf', 50)
+        font = cv2.FONT_HERSHEY_COMPLEX
+        font_scale = 2
+
+        text = split_text_hex[0]
+        split_text_hex[1] = split_text_hex[1].lstrip('#')
+        rgb = tuple(int(split_text_hex[1][i: i + 2], 16) for i in (0, 2, 4))
+        cv2.putText(self.image, text, (30, 80), font, font_scale, rgb, 2, cv2.LINE_AA)
+
+        return self.image

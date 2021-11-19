@@ -26,4 +26,9 @@ def pipeline(filter_name, argument, image_read):
         fetch_class = filters.CleanToDilate(image_read)
         image_read = fetch_class.clean_to_dilate(argument, argument, argument)
 
+    if filter_name == 'textcolor':
+        log("Applying a text filter...")
+        fetch_class = filters.FilterZeTeam(image_read, argument)
+        image_read = fetch_class.text_color()
+
     return image_read

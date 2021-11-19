@@ -22,7 +22,7 @@ def initialisation():
         "output_dir": '',
         "log_file": '',
         "filters": '',
-        "extension": '',
+        "extension": 'image',
     }
 
     for i, arg in enumerate(args):
@@ -42,7 +42,8 @@ def initialisation():
             print("\nFilters options :")
             print('"grayscale", ColorToGray\n'
                   '"blur:integer_odd", CleanToBlur\n'
-                  '"dilate:integer", CleanToDilate\n')
+                  '"dilate:integer", CleanToDilate\n'
+                  '"textcolor":Text-#000000", FilterZeTeam\n')
             print('Usage example : --f "blur:5|grayscale"\n')
             return sys.exit(0)
 
@@ -64,14 +65,12 @@ def initialisation():
                 content['log_file'] = 'log'
 
         if arg == '--output-type=gif':
-            new_content = content
-            new_content['extension'] = 'gif'
-            return gif_processing(new_content)
+            content['extension'] = 'gif'
+            return content
 
         if arg == '--video=pain.mp4':
-            new_content = content
-            new_content['extension'] = 'mp4'
-            return video_processing(new_content)
+            content['extension'] = 'mp4'
+            return content
 
     return content
 
@@ -118,10 +117,10 @@ def path_analyse(content):
 
 
 def default_processing(content):
-    content = path_analyse(content)
-
     if content is None:
         return
+
+    content = path_analyse(content)
 
     filter_argument = get.filters(content['filters'])
     images_list = get.images(content['input_dir'])
