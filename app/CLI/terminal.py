@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-import cv2 as cv2
-=======
->>>>>>> Christopher
 import os
 import sys
 from cv2 import cv2
@@ -210,33 +206,6 @@ def gif_processing(content):
     content = path_analyse(content)
     # Error if -i or -o missing, not fixed.
 
-<<<<<<< HEAD
-    if path is None:
-        return
-    """
-    
-    If the path is empty : nothing happened
-    """
-    args = sys.argv
-    for i, arg in enumerate(args):
-        if arg == '--f':
-
-            if i + 1 >= len(args):
-                log("ERROR : IndexError : You did not provided a filter.")
-                return
-            """
-            
-            If the filter is unknown then an error message appears
-            """
-
-            images_list = os.listdir(path['input_dir'])
-            if len(images_list) == 0:
-                return log('ERROR : IndexError : The directory returned NULL.')
-            """
-            
-            If there is no image then an error message appears
-            """
-=======
     images_list = get.images(content['input_dir'])
     filter_argument = get.filters(content['filters'])
     filtered_directory = content['output_dir']
@@ -255,39 +224,16 @@ def gif_processing(content):
     for image in images_list:
         log(f"Opening image data from = {origin_directory}/{image}")
         image_read = cv2.imread(f"{origin_directory}/{image}")
->>>>>>> Christopher
 
         for filter_name, argument in filter_argument.items():
             image_read = pip(filter_name, argument, image_read)
 
-<<<<<<< HEAD
-            filtered_image_directory = path['output_dir']
-            if not os.path.exists(f"{filtered_image_directory}"):
-                log(f'Creating directory {filtered_image_directory}...')
-                os.makedirs(f"{filtered_image_directory}")
-                """
-                
-                Tidy the filtered images in "output", if "output" doesn't exist then an "output" is created
-                """
-=======
         image_filtered.append(Image.fromarray(image_read))
->>>>>>> Christopher
 
     create.gif(image_filtered, filtered_directory)
 
-<<<<<<< HEAD
-            for image in images_list:
-                log(f"Opening image data from = {path['input_dir']}/{image}")
-                image_read = cv2.imread(f"{path['input_dir']}/{image}")
-                to_directory_filter = f"{path['output_dir']}/{image}"
-                """
-                
-                Filter confirmation
-                """
-=======
     if log_file == 'log':
         return throw_log()
->>>>>>> Christopher
 
     return
 
@@ -330,16 +276,7 @@ def video_processing(content):
     else:
         this.rewrite_video(filtered_directory, video_images_list, video_size, gray_or_not, text_or_not)
 
-<<<<<<< HEAD
-                cv2.imwrite(to_directory_filter, image_read)
-                log(f"Save result image to = {to_directory_filter}\n")
-                """
-                
-                Put the filtered image to "output"
-                """
-=======
     if log_file == 'log':
         return throw_log()
->>>>>>> Christopher
 
     return

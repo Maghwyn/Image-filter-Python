@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-import cv2 as cv2
-=======
->>>>>>> Christopher
 import numpy
 from cv2 import cv2
 from app.log.logger import transfer_log as log
