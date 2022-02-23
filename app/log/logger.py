@@ -1,4 +1,5 @@
 from datetime import datetime
+import os
 
 
 def time():
@@ -31,7 +32,30 @@ def dump_log():
     """
 
     try:
-        with open("app/log/imagefilter.log", "a") as f:
+        with open("app/log/imagefilter.log", "r") as f:
             print(f.read())
     except FileNotFoundError:
         print('ERROR : FileNotFoundError : Target "imagefilter.log" couldn\'t be fetched.')
+
+
+def clear_log():
+    """
+    This will simply read the log file and clear its content.
+    """
+
+    try:
+        with open("app/log/imagefilter.log", "a") as f:
+            f.truncate(0)
+    except FileNotFoundError:
+        print('ERROR : FileNotFoundError : Target "imagefilter.log" couldn\'t be fetched.')
+
+
+def throw_log(log_file):
+    """
+    This function will simple check if the file exist in the project, and return the dump_log value.
+    :return: nothing in case the file doesn't exist.
+    """
+    if os.path.isfile(f'app/log/{log_file}'):
+        return dump_log()
+
+    return

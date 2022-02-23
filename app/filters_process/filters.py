@@ -1,12 +1,16 @@
+<<<<<<< HEAD
 import cv2 as cv2
+=======
+>>>>>>> Christopher
 import numpy
+from cv2 import cv2
 from app.log.logger import transfer_log as log
 
 
 class RgbToGray:
     """
     Declare a class named RgbToGray.
-    This class will declare the image_path passed as an argument, then transform it into B & W.
+    This class will declare the image passed as an argument, then transform it into B & W.
 
     :def rgb_to_gray: apply a B&W filter on the class image.
     """
@@ -21,9 +25,9 @@ class RgbToGray:
 class CleanToBlur:
     """
     Declare a class named CleanToBlur.
-    This class will declare the image_path passed as an argument, then blur it.
+    This class will declare the image passed as an argument, then blur it.
 
-    :def clean_to_blur: apply a blurred filter on the class image.
+    :def clean_to_blur: apply a blurred filter on the image.
     :-> blur_strength_x: apply a blur strength on the x axis of the class image.
     :-> blur_strength_y: apply a blur strength on the y axis of the class image.
     """
@@ -32,23 +36,23 @@ class CleanToBlur:
         self.image = my_image
 
     def clean_to_blur(self, blur_strength_x, blur_strength_y):
-        if blur_strength_x < 0 or blur_strength_y < 0:
+        if int(blur_strength_x) < 0 or int(blur_strength_y) < 0:
             log('ValueError : The blur filter failed => Negative dimensions are not allowed.')
             return self.image
 
-        if blur_strength_x % 2 == 0 or blur_strength_y % 2 == 0:
+        if int(blur_strength_x) % 2 == 0 or int(blur_strength_y) % 2 == 0:
             log('ValueError : The blur filter failed => Parameters can not be even.')
             return self.image
 
-        return cv2.GaussianBlur(self.image, (blur_strength_x, blur_strength_y), 0)
+        return cv2.GaussianBlur(self.image, (int(blur_strength_x), int(blur_strength_y)), 0)
 
 
 class CleanToDilate:
     """
     Declare a class named CleanToDilate.
-    This class will declare the image_path passed as an argument, then dilate it.
+    This class will declare the image passed as an argument, then dilate it.
 
-    :def clean_to_dilate: apply a dilated filter on the class image.
+    :def clean_to_dilate: apply a dilated filter on the image.
     :-> dilate_strength_x: apply a dilate strength on the x axis of the class image.
     :-> dilate_strength_y: apply a dilate strength on the y axis of the class image.
     :-> iterations: apply the dilate to x number of pixels.
@@ -58,9 +62,41 @@ class CleanToDilate:
         self.image = my_image
 
     def clean_to_dilate(self, dilate_strength_x, dilate_strength_y, iterations):
-        if dilate_strength_x < 0 or dilate_strength_y < 0:
+        if int(dilate_strength_x) < 0 or int(dilate_strength_y) < 0:
             log('ValueError : The dilate filter failed => Negative dimensions are not allowed.')
             return self.image
 
-        kernel = numpy.ones((dilate_strength_x, dilate_strength_y), numpy.uint8)
-        return cv2.dilate(self.image, kernel, iterations=iterations)
+        kernel = numpy.ones((int(dilate_strength_x), int(dilate_strength_y)), numpy.uint8)
+        return cv2.dilate(self.image, kernel, iterations=int(iterations))
+
+
+class FilterZeTeam:
+    """
+    Declare a class named FilterZeTeam.
+    This class will declare the image passed as an argument, then add a text to it.
+
+    :def text_color: apply a text filter on the class image.
+    -> It will slip the argument into two index.
+    -> One of them will not be processed, it will only be used as a string of the text submitted.
+    -> The other one will be the hexadecimal processed to rgb.
+    """
+
+    def __init__(self, my_image, text_hex_value):
+        self.image = my_image
+        self.text_hex = text_hex_value
+
+    def text_color(self):
+
+        split_text_hex = []
+        if '-' in self.text_hex:
+            split_text_hex = self.text_hex.split('-')
+
+        font = cv2.FONT_HERSHEY_COMPLEX
+        font_scale = 2
+
+        text = split_text_hex[0]
+        split_text_hex[1] = split_text_hex[1].lstrip('#')
+        rgb = tuple(int(split_text_hex[1][i: i + 2], 16) for i in (0, 2, 4))
+        cv2.putText(self.image, text, (30, 80), font, font_scale, rgb, 2, cv2.LINE_AA)
+
+        return self.image
